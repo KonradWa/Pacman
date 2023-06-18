@@ -8,9 +8,9 @@ from text import Text
 
 class Level:
     def __init__(self):
-        # Sprites
         self.player_pos = None
         self.tile = None
+        # Sprites
         self.wall = pg.sprite.Group()
         self.point = pg.sprite.Group()
         self.stop = pg.sprite.Group()
@@ -28,12 +28,14 @@ class Level:
         # BG
         tile = BackGround()
         self.bg.add(tile)
-
+        # Game attribute
         self.power_up_active = False
         self.counter = 0
         self.game = 0
         self.game_timer = 0
+        self.ghost_timer = 0
         self.points = 0
+        # Text
         self.points_display = []
         txt = Text("SCORE:", "white", 0, 0, 20)
         self.points_display.append(txt)
@@ -44,6 +46,7 @@ class Level:
         txt = Text(f"001", "white", 390, 26, 20)
         self.points_display.append(txt)
 
+    # Generowanie mapy
     def setup_level(self, layout):
         self.tile = []
         self.ghost_pos = [0,1,2,3]
@@ -68,22 +71,22 @@ class Level:
                         self.power_up.add(tile)
                         self.tile.append(tile)
                     elif tile_type == "Yellow":
-                        tile = Clyde(x, y, pacman_start_pos, 2, tile_type, 2, False, False, 0, self.stop)
+                        tile = Clyde(x, y, (300,64), 2, tile_type, 2, False, False, 0, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
                         self.ghost_pos[0] = (x,y)
                     elif tile_type == "Pink":
-                        tile = Pinky(x, y, pacman_start_pos, 2, tile_type, 2, False, False, 1, self.stop)
+                        tile = Pinky(x, y, (300,64), 2, tile_type, 2, False, False, 1, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
                         self.ghost_pos[1] = (x,y)
                     elif tile_type == "Blue":
-                        tile = Inky(x, y, pacman_start_pos, 2, tile_type, 2, False, False, 2, self.stop)
+                        tile = Inky(x, y, (300,64), 2, tile_type, 2, False, False, 2, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
                         self.ghost_pos[2] = (x,y)
                     elif tile_type == "Red":
-                        tile = Blinky(x, y, pacman_start_pos, 2, tile_type, 2, False, False, 3, self.stop)
+                        tile = Blinky(x, y, (300,64), 2, tile_type, 2, False, False, 3, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
                         self.ghost_pos[3] = (256,288)
@@ -94,7 +97,7 @@ class Level:
 
     def player_wall_collision(self):
         player = self.player.sprite
-
+        # Zawracanie
         for s in self.stop.sprites():
             if player.direction == 0 and player.rect.colliderect(s.rect):
                 player.rect.centerx -= 2
@@ -104,7 +107,7 @@ class Level:
                 player.rect.centery += 2
             elif player.direction == 3 and player.rect.colliderect(s.rect):
                 player.rect.centery -= 2
-
+        # Skręcanie
         for z in zakrety:
             if player.direction == 0 and player.rect.topleft[0] == z[0]*16 and player.rect.topleft[1] == z[1]*16:
                 player.last_direction = player.direction
@@ -118,7 +121,7 @@ class Level:
             elif player.direction == 3 and player.rect.topleft[0] == z[0]*16 and player.rect.topleft[1] == z[1]*16:
                 player.last_direction = player.direction
                 player.direction = player.next_direction
-
+        # Kolizja ze ścianą
         if player.direction == 0 and player.next_direction == 1:
             player.direction = player.next_direction
         elif player.direction == 1 and player.next_direction == 0:
@@ -130,6 +133,7 @@ class Level:
 
     def player_ghost_collision(self):
         player = self.player.sprite
+        # Zjadanie duchów
         if self.power_up_active:
             for g in self.ghost.sprites():
                 if player.rect.colliderect(g.rect):
@@ -137,7 +141,7 @@ class Level:
                     g.dead = True
                     g.import_character_assets()
                     g.target = (224, 288)
-
+        # Bicie gracza
         else:
             for g in self.ghost.sprites():
                 if not g.dead:
@@ -148,16 +152,20 @@ class Level:
                     if tmp > 0:
                         player.rect.topleft = self.player_pos
                         for g in self.ghost.sprites():
+                            g.target = (300,64)
+                            self.ghost_timer = 0
                             g.x_pos = self.ghost_pos[g.id][0]
                             g.y_pos = self.ghost_pos[g.id][1]
                             g.direction = 2
 
+    # Zbieranie punktów
     def eat_points(self):
         for p in self.point.sprites():
             if self.player.sprite.rect.collidepoint(p.rect.centerx, p.rect.centery):
                 p.kill()
                 self.points += 10
 
+    # Zbieranie power up'ów
     def eat_power_up(self):
             for p in self.power_up.sprites():
                 if self.player.sprite.rect.collidepoint(p.rect.centerx, p.rect.centery):
@@ -169,6 +177,7 @@ class Level:
                         g.power_up = True
                         g.import_character_assets()
 
+    # Licznik trwania power up'a
     def power_up_counter(self):
         if self.counter > 300:
             self.player.sprite.power_up = False
@@ -179,19 +188,24 @@ class Level:
             self.counter = 0
         self.counter += 1
 
+    # Tworzenie licznika żyć
     def life_bar(self):
         x = 0
         for _ in range(self.player.sprite.life):
             self.life.add(Tile(x,544,"pacman/0"))
             x += 16
 
+    # Ustawianie calu duchów
     def set_target(self):
-        for g in self.ghost.sprites():
-            if g.dead:
-                g.target = (256, 288)
-            else:
-                g.target = self.player.sprite.rect.topleft
+        if self.ghost_timer >40:
+            for g in self.ghost.sprites():
+                if g.dead:
+                    g.target = (256, 288)
+                else:
+                    g.target = self.player.sprite.rect.topleft
+        self.ghost_timer += 1
 
+    # Play, pause, restart
     def set_game(self):
         keys = pg.key.get_pressed()
         if self.game_timer <= 0:
@@ -217,21 +231,26 @@ class Level:
         else:
             self.game_timer -=1
 
+    # Sprawdzanie śmierci
     def check_dead(self):
         if self.player.sprite.life == 0:
             self.game = 3
 
+    # Sprawdzanie wygranej
     def check_win(self):
         counter = 0
         for _ in self.point.sprites():
             counter += 1
         if counter == 0:
             self.game = 4
+
     def run(self):
         self.check_win()
         self.check_dead()
         self.set_game()
+        # Ekran gry
         if self.game == 1:
+            # Silnik gry
             self.set_target()
             self.player_wall_collision()
             self.player_ghost_collision()
@@ -239,20 +258,20 @@ class Level:
             self.eat_power_up()
             if self.power_up_active:
                 self.power_up_counter()
-
+            # Rysowanie gry
             self.bg.draw(self.display_surface)
             self.life_bar()
             self.life.draw(self.display_surface)
             self.life.empty()
-
             self.point.draw(self.display_surface)
             self.power_up.draw(self.display_surface)
             self.ghost.draw(self.display_surface)
             self.player.draw(self.display_surface)
-
+            # Aktualizacja pozycji
             self.ghost.update()
             self.player.update()
 
+            # Aktualizacja punktów
             counter = 0
             for p in self.points_display:
                 if counter == 1:
@@ -261,11 +280,11 @@ class Level:
                 p.draw(self.display_surface)
                 counter += 1
         else:
+            # Rysowanie
             self.bg.draw(self.display_surface)
             self.life_bar()
             self.life.draw(self.display_surface)
             self.life.empty()
-
             self.point.draw(self.display_surface)
             self.power_up.draw(self.display_surface)
             self.ghost.draw(self.display_surface)
@@ -277,12 +296,16 @@ class Level:
                     p.update()
                 p.draw(self.display_surface)
                 counter += 1
+            # Ekran startowy
             if self.game == 0:
                 txt = Text(f"START", "yellow", 178, 320, 20)
+            # Ekran pauzy
             elif self.game == 2:
                 txt = Text(f"Paused", "yellow", 165, 320, 20)
+            # Ekran przegranej
             elif self.game == 3:
                 txt = Text(f"DEAD", "yellow", 185, 320, 20)
+            # Ekran wygranej
             elif self.game == 4:
                 txt = Text(f"WIN", "yellow", 195, 320, 20)
             txt.draw(self.display_surface)

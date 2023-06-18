@@ -51,7 +51,7 @@ class Ghost(pg.sprite.Sprite):
                 self.animations[animation] = import_folder(full_path)
 
     def animate(self):
-
+        print(self.target)
         if not self.power_up and not self.dead:
             animation = self.animations[self.direction]
         else:

@@ -1,7 +1,7 @@
 import pygame as pg
 from support import *
 
-
+# Object tła
 class BackGround(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -10,7 +10,7 @@ class BackGround(pg.sprite.Sprite):
         self.image = self.frames[0]
         self.rect = self.image.get_rect(topleft=(0, 48))
 
-
+# Objeck
 class Tile(pg.sprite.Sprite):
     def __init__(self, x, y, name):
         super().__init__()

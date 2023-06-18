@@ -3,7 +3,6 @@ from support import *
 from level import Level
 import sys
 
-
 pg.init()
 screen = pg.display.set_mode((screen_width, screen_height))
 clock = pg.time.Clock()

@@ -1,5 +1,6 @@
 import pygame as pg
 
+# Object tekstowy
 class Text:
     def __init__(self, text, text_color, pc_x, pc_y, font_size=32, font_family=None):
         self.text = str(text)
