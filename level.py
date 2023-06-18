@@ -97,6 +97,17 @@ class Level:
                 player.direction = player.last_direction
                 player.rect.centery -= 2
 
+    def player_ghost_collision(self):
+        player = self.player.sprite
+        if self.power_up_active:
+            for g in self.ghost.sprites():
+                if player.rect.colliderect(g.rect):
+                    self.points += 200
+                    g.dead = True
+                    g.import_character_assets()
+
+        else:
+            pass
     def eat_points(self):
         for p in self.point.sprites():
             if self.player.sprite.rect.collidepoint(p.rect.centerx, p.rect.centery):
@@ -104,15 +115,15 @@ class Level:
                 self.points += 10
 
     def eat_power_up(self):
-        for p in self.power_up.sprites():
-            if self.player.sprite.rect.collidepoint(p.rect.centerx, p.rect.centery):
-                p.kill()
-                self.points += 50
-                self.power_up_active = True
-                self.player.sprite.power_up = True
-                for g in self.ghost.sprites():
-                    g.power_up = True
-                    g.import_character_assets()
+            for p in self.power_up.sprites():
+                if self.player.sprite.rect.collidepoint(p.rect.centerx, p.rect.centery):
+                    p.kill()
+                    self.points += 50
+                    self.power_up_active = True
+                    self.player.sprite.power_up = True
+                    for g in self.ghost.sprites():
+                        g.power_up = True
+                        g.import_character_assets()
 
     def power_up_counter(self):
         if self.counter > 300:
@@ -133,6 +144,7 @@ class Level:
             g.target = target[g.id]
 
         self.player_wall_collision()
+        self.player_ghost_collision()
         self.eat_points()
         self.eat_power_up()
         if self.power_up_active:

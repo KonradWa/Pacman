@@ -33,11 +33,17 @@ class Ghost(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(x_coord, y_coord))
 
     def import_character_assets(self):
-        if not self.power_up:
+        if not self.power_up and not self.dead:
             self.animations = {0: [], 1: [], 2: [], 3: []}
             character_path = f"assets/ghost/{self.id}/"
             for animation in self.animations.keys():
                 full_path = character_path + str(animation)
+                self.animations[animation] = import_folder(full_path)
+        elif self.dead:
+            self.animations = {0: []}
+            character_path = "assets/ghost/dead"
+            for animation in self.animations.keys():
+                full_path = character_path
                 self.animations[animation] = import_folder(full_path)
         elif self.power_up:
             self.animations = {0: []}
@@ -46,11 +52,10 @@ class Ghost(pg.sprite.Sprite):
                 full_path = character_path
                 self.animations[animation] = import_folder(full_path)
 
-
     def animate(self):
-        if not self.power_up:
+        if not self.power_up and not self.dead:
             animation = self.animations[self.direction]
-        elif self.power_up:
+        else:
             animation = self.animations[0]
 
         self.frame_index += self.animations_speed
