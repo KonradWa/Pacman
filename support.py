@@ -44,3 +44,11 @@ tile_types = {
 
 level_1 = import_csv_save("level/map1.csv")
 
+x = import_csv_save("level/zakret.csv")
+zakrety = []
+for row_index, row in enumerate(x):
+    for col_index, col in enumerate(row):
+        if col == "1":
+            zakrety.append((col_index,row_index))
+print(zakrety)
+

@@ -94,21 +94,39 @@ class Level:
 
     def player_wall_collision(self):
         player = self.player.sprite
+
         for s in self.stop.sprites():
             if player.direction == 0 and player.rect.colliderect(s.rect):
-                player.direction = player.last_direction
                 player.rect.centerx -= 2
             elif player.direction == 1 and player.rect.colliderect(s.rect):
-                player.direction = player.last_direction
                 player.rect.centerx += 2
-
             elif player.direction == 2 and player.rect.colliderect(s.rect):
-                player.direction = player.last_direction
                 player.rect.centery += 2
-
             elif player.direction == 3 and player.rect.colliderect(s.rect):
-                player.direction = player.last_direction
                 player.rect.centery -= 2
+
+        for z in zakrety:
+            if player.direction == 0 and player.rect.topleft[0] == z[0]*16 and player.rect.topleft[1] == z[1]*16:
+                player.last_direction = player.direction
+                player.direction = player.next_direction
+            elif player.direction == 1 and player.rect.topleft[0] == z[0]*16 and player.rect.topleft[1] == z[1]*16:
+                player.last_direction = player.direction
+                player.direction = player.next_direction
+            elif player.direction == 2 and player.rect.topleft[0] == z[0]*16 and player.rect.topleft[1] == z[1]*16:
+                player.last_direction = player.direction
+                player.direction = player.next_direction
+            elif player.direction == 3 and player.rect.topleft[0] == z[0]*16 and player.rect.topleft[1] == z[1]*16:
+                player.last_direction = player.direction
+                player.direction = player.next_direction
+
+        if player.direction == 0 and player.next_direction == 1:
+            player.direction = player.next_direction
+        elif player.direction == 1 and player.next_direction == 0:
+            player.direction = player.next_direction
+        elif player.direction == 2 and player.next_direction == 3:
+            player.direction = player.next_direction
+        elif player.direction == 3 and player.next_direction == 2:
+            player.direction = player.next_direction
 
     def player_ghost_collision(self):
         player = self.player.sprite
@@ -133,7 +151,6 @@ class Level:
                             g.x_pos = self.ghost_pos[g.id][0]
                             g.y_pos = self.ghost_pos[g.id][1]
                             g.direction = 2
-
 
     def eat_points(self):
         for p in self.point.sprites():
