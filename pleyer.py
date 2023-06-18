@@ -13,6 +13,7 @@ class Player(pg.sprite.Sprite):
         self.speed = 2
 
         self.direction = 0
+        self.last_direction = 0
 
     def import_character_assets(self):
         self.animations = {0: [], 1: [], 2: [], 3: []}
@@ -32,15 +33,19 @@ class Player(pg.sprite.Sprite):
     def get_input(self):
         keys = pg.key.get_pressed()
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.last_direction = self.direction
             self.direction = 0
 
         elif keys[pg.K_LEFT] or keys[pg.K_a]:
+            self.last_direction = self.direction
             self.direction = 1
 
         elif keys[pg.K_UP] or keys[pg.K_w]:
+            self.last_direction = self.direction
             self.direction = 2
 
         elif keys[pg.K_DOWN] or keys[pg.K_s]:
+            self.last_direction = self.direction
             self.direction = 3
 
     def move(self):

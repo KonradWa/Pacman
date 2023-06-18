@@ -47,18 +47,18 @@ class Level:
                         tile = Tile(x, y, tile_type)
                         self.power_up.add(tile)
                         self.tile.append(tile)
-                    # elif tile_type == "Yellow":
-                    #     tile = Clyde(x, y, (100, 100), 1, tile_type, 2, False, False, 0, self.stop)
-                    #     self.ghost.add(tile)
-                    #     self.tile.append(tile)
-                    # elif tile_type == "Pink":
-                    #     tile = Pinky(x, y, (100, 100), 1, tile_type, 2, False, False, 1, self.stop)
-                    #     self.ghost.add(tile)
-                    #     self.tile.append(tile)
-                    # elif tile_type == "Blue":
-                    #     tile = Inky(x, y, (100, 100), 1, tile_type, 2, False, False, 2, self.stop)
-                    #     self.ghost.add(tile)
-                    #     self.tile.append(tile)
+                    elif tile_type == "Yellow":
+                        tile = Clyde(x, y, (100, 100), 1, tile_type, 2, False, False, 0, self.stop)
+                        self.ghost.add(tile)
+                        self.tile.append(tile)
+                    elif tile_type == "Pink":
+                        tile = Pinky(x, y, (100, 100), 1, tile_type, 2, False, False, 1, self.stop)
+                        self.ghost.add(tile)
+                        self.tile.append(tile)
+                    elif tile_type == "Blue":
+                        tile = Inky(x, y, (100, 100), 1, tile_type, 2, False, False, 2, self.stop)
+                        self.ghost.add(tile)
+                        self.tile.append(tile)
                     elif tile_type == "Red":
                         tile = Blinky(x, y, (100, 100), 1, tile_type, 2, False, False, 3, self.stop)
                         self.ghost.add(tile)
@@ -68,12 +68,33 @@ class Level:
                         self.stop.add(tile)
                         self.tile.append(tile)
 
+    def player_wall_collision(self):
+        player = self.player.sprite
+        for s in self.stop.sprites():
+            if player.direction == 0 and player.rect.colliderect(s.rect):
+                player.direction = player.last_direction
+                player.rect.centerx -= 2
+            elif player.direction == 1 and player.rect.colliderect(s.rect):
+                player.direction = player.last_direction
+                player.rect.centerx += 2
+
+            elif player.direction == 2 and player.rect.colliderect(s.rect):
+                player.direction = player.last_direction
+                player.rect.centery += 2
+
+            elif player.direction == 3 and player.rect.colliderect(s.rect):
+                player.direction = player.last_direction
+                player.rect.centery -= 2
+
     def run(self):
         player_x = self.player.sprite.rect.centerx
         player_y = self.player.sprite.rect.centery
         target = [(player_x, player_y), (player_x, player_y), (player_x, player_y), (player_x, player_y)]
         for g in self.ghost.sprites():
             g.target = target[g.id]
+
+        self.player_wall_collision()
+
         self.bg.draw(self.display_surface)
         self.point.draw(self.display_surface)
         self.power_up.draw(self.display_surface)
