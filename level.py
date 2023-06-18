@@ -27,14 +27,15 @@ class Level:
         tile = BackGround()
         self.bg.add(tile)
 
+        self.power_up_active = False
+        self.counter = 0
+
         self.points = 0
         self.points_display = []
-        txt = Text("SCORE:","white",0,0,48)
+        txt = Text("SCORE:", "white", 0, 0, 48)
         self.points_display.append(txt)
-        txt = Text(f"{self.points}","white",0,32)
+        txt = Text(f"{self.points}", "white", 0, 32)
         self.points_display.append(txt)
-
-
 
     def setup_level(self, layout):
         self.tile = []
@@ -98,9 +99,31 @@ class Level:
 
     def eat_points(self):
         for p in self.point.sprites():
-            if self.player.sprite.rect.collidepoint(p.rect.centerx,p.rect.centery):
+            if self.player.sprite.rect.collidepoint(p.rect.centerx, p.rect.centery):
                 p.kill()
                 self.points += 10
+
+    def eat_power_up(self):
+        for p in self.power_up.sprites():
+            if self.player.sprite.rect.collidepoint(p.rect.centerx, p.rect.centery):
+                p.kill()
+                self.points += 50
+                self.power_up_active = True
+                self.player.sprite.power_up = True
+                for g in self.ghost.sprites():
+                    g.power_up = True
+                    g.import_character_assets()
+
+    def power_up_counter(self):
+        if self.counter > 300:
+            self.player.sprite.power_up = False
+            for g in self.ghost.sprites():
+                g.power_up = False
+                g.import_character_assets()
+            self.power_up_active = False
+            self.counter = 0
+        self.counter += 1
+        print(f"{self.player.sprite.power_up}, {self.power_up_active}")
 
     def run(self):
         player_x = self.player.sprite.rect.centerx
@@ -111,6 +134,9 @@ class Level:
 
         self.player_wall_collision()
         self.eat_points()
+        self.eat_power_up()
+        if self.power_up_active:
+            self.power_up_counter()
 
         self.bg.draw(self.display_surface)
         self.point.draw(self.display_surface)
@@ -127,5 +153,4 @@ class Level:
                 p.text = f"{self.points}"
                 p.update()
             p.draw(self.display_surface)
-            counter+=1
-
+            counter += 1

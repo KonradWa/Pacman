@@ -10,6 +10,7 @@ class Player(pg.sprite.Sprite):
         self.animations_speed = 0.2
         self.image = self.animations[0][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
+        self.power_up = False
         self.speed = 2
 
         self.direction = 0
