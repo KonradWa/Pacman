@@ -9,6 +9,7 @@ for row_index, row in enumerate(level):
 class Ghost(pg.sprite.Sprite):
     def __init__(self, x_coord, y_coord, target, speed, img, direct, dead, box, id, stop):
         super().__init__()
+        self.animations = None
         self.stop = stop
         self.x_pos = x_coord
         self.y_pos = y_coord
@@ -21,17 +22,27 @@ class Ghost(pg.sprite.Sprite):
         self.dead = dead
         self.in_box = box
         self.id = id
-        self.frames = import_folder("assets/ghost/"+img)
+        self.import_character_assets()
         self.frame_index = 0
-        self.image = self.frames[self.frame_index]
+        self.animations_speed = 0.2
+        self.image = self.animations[direct][self.frame_index]
         self.rect = self.image.get_rect(topleft=(x_coord, y_coord))
-        self.turns, self.in_box = self.check_collisions()
+
+
+    def import_character_assets(self):
+        self.animations = {0: [], 1: [], 2: [], 3: []}
+        character_path = f"assets/ghost/{self.id}/"
+        for animation in self.animations.keys():
+            full_path = character_path + str(animation)
+            self.animations[animation] = import_folder(full_path)
 
     def animate(self):
-        self.frame_index += 0.2
-        if self.frame_index >= len(self.frames):
+        animation = self.animations[self.direction]
+        self.frame_index += self.animations_speed
+        if self.frame_index >= len(animation):
             self.frame_index = 0
-        self.image = self.frames[int(self.frame_index)]
+
+        self.image = animation[int(self.frame_index)]
 
     def check_collisions(self):
         # R, L, U, D
@@ -44,63 +55,68 @@ class Ghost(pg.sprite.Sprite):
         if 0 < self.x_pos // 28 < 28:
             if level[(self.y_pos-16) // num1][self.x_pos // num2] == 9:
                 self.turns[2] = True
-            if level[self.y_pos // num1][(self.x_pos - num3) // num2] < 8 \
+            if level[self.y_pos // num1][(self.x_pos - num3) // num2] != 8 \
                     or (level[self.y_pos // num1][(self.x_pos - num3) // num2] == 9 and (
                     self.in_box or self.dead)):
                 self.turns[1] = True
-            if level[self.y_pos // num1][(self.x_pos + num3) // num2] < 8 \
+            if level[self.y_pos // num1][(self.x_pos + num3) // num2] != 8 \
                     or (level[self.y_pos // num1][(self.x_pos + num3) // num2] == 9 and (
                     self.in_box or self.dead)):
                 self.turns[0] = True
-            if level[(self.y_pos + num3) // num1][self.x_pos // num2] < 8 \
+            if level[(self.y_pos + num3) // num1][self.x_pos // num2] != 8 \
                     or (level[(self.y_pos + num3) // num1][self.x_pos // num2] == 9 and (
                     self.in_box or self.dead)):
                 self.turns[3] = True
-            if level[(self.y_pos - num3) // num1][self.x_pos // num2] < 8 \
+            if level[(self.y_pos - num3) // num1][self.x_pos // num2] != 8 \
                     or (level[(self.y_pos - num3) // num1][self.x_pos // num2] == 9 and (
                     self.in_box or self.dead)):
                 self.turns[2] = True
 
             if self.direction == 2 or self.direction == 3:
-                if 14 <= self.x_pos % num2 <= 15:
-                    if level[(self.y_pos + num3) // num1][self.x_pos // num2] < 8 \
+                if self.x_pos % num2 == 0:
+                    if level[(self.y_pos + num3) // num1][self.x_pos // num2] != 8 \
                             or (level[(self.y_pos + num3) // num1][self.x_pos // num2] == 9 and (
                             self.in_box or self.dead)):
                         self.turns[3] = True
-                    if level[(self.y_pos - num3) // num1][self.x_pos // num2] < 8 \
+                    if level[(self.y_pos - num3) // num1][self.x_pos // num2] != 8 \
                             or (level[(self.y_pos - num3) // num1][self.x_pos // num2] == 9 and (
                             self.in_box or self.dead)):
+
                         self.turns[2] = True
-                if 14 <= self.y_pos % num1 <= 15:
-                    if level[self.y_pos // num1][(self.x_pos - num2) // num2] < 8 \
+                if self.y_pos % num1 == 0:
+                    if level[self.y_pos // num1][(self.x_pos - num2) // num2] != 8 \
                             or (level[self.y_pos // num1][(self.x_pos - num2) // num2] == 9 and (
                             self.in_box or self.dead)):
+
                         self.turns[1] = True
-                    if level[self.y_pos // num1][(self.x_pos + num2) // num2] < 8 \
+                    if level[self.y_pos // num1][(self.x_pos + num2) // num2] != 8 \
                             or (level[self.y_pos // num1][(self.x_pos + num2) // num2] == 9 and (
                             self.in_box or self.dead)):
+
                         self.turns[0] = True
 
             if self.direction == 0 or self.direction == 1:
-                print(self.x_pos % num2)
-
-                if 14 <= self.x_pos % num2 <= 15:
-                    if level[(self.y_pos + num3) // num1][self.x_pos // num2] < 8 \
+                if self.x_pos % num2 == 0:
+                    if level[(self.y_pos + num3) // num1][self.x_pos // num2] != 8 \
                             or (level[(self.y_pos + num3) // num1][self.x_pos // num2] == 9 and (
                             self.in_box or self.dead)):
+                        print(self.x_pos)
                         self.turns[3] = True
-                    if level[(self.y_pos - num3) // num1][self.x_pos // num2] < 8 \
+                    if level[(self.y_pos - num3) // num1][self.x_pos // num2] != 8 \
                             or (level[(self.y_pos - num3) // num1][self.x_pos // num2] == 9 and (
                             self.in_box or self.dead)):
+                        print(self.x_pos)
                         self.turns[2] = True
-                if 14 <= self.y_pos % num1 <= 15:
-                    if level[self.y_pos // num1][(self.x_pos - num3) // num2] < 8 \
+                if self.y_pos % num1 == 0:
+                    if level[self.y_pos // num1][(self.x_pos - num3) // num2] != 8 \
                             or (level[self.y_pos // num1][(self.x_pos - num3) // num2] == 9 and (
                             self.in_box or self.dead)):
+
                         self.turns[1] = True
-                    if level[self.y_pos // num1][(self.x_pos + num3) // num2] < 8 \
+                    if level[self.y_pos // num1][(self.x_pos + num3) // num2] != 8 \
                             or (level[self.y_pos // num1][(self.x_pos + num3) // num2] == 9 and (
                             self.in_box or self.dead)):
+
                         self.turns[0] = True
         else:
             self.turns[0] = True
@@ -109,7 +125,7 @@ class Ghost(pg.sprite.Sprite):
             self.in_box = True
         else:
             self.in_box = False
-        return self.turns, self.in_box
+
 
 
 class Clyde(Ghost):
@@ -256,13 +272,12 @@ class Clyde(Ghost):
             self.x_pos = 900
         elif self.x_pos > 900:
             self.x_pos - 30
-        return self.x_pos, self.y_pos, self.direction
+
 
     def update(self):
-        print(self.turns)
         self.rect = self.image.get_rect(topleft=(self.x_pos,self.y_pos))
         self.animate()
-        self.turns, self.in_box = self.check_collisions()
+        self.check_collisions()
         self.move_clyde()
 
 
@@ -374,12 +389,11 @@ class Blinky(Ghost):
             self.x_pos = 900
         elif self.x_pos > 900:
             self.x_pos - 30
-        return self.x_pos, self.y_pos, self.direction
 
     def update(self):
         self.rect = self.image.get_rect(topleft=(self.x_pos,self.y_pos))
         self.animate()
-        self.turns, self.in_box = self.check_collisions()
+        self.check_collisions()
         self.move_blinky()
 
 
@@ -507,12 +521,11 @@ class Inky(Ghost):
             self.x_pos = 900
         elif self.x_pos > 900:
             self.x_pos - 30
-        return self.x_pos, self.y_pos, self.direction
 
     def update(self):
         self.rect = self.image.get_rect(topleft=(self.x_pos,self.y_pos))
         self.animate()
-        self.turns, self.in_box = self.check_collisions()
+        self.check_collisions()
         self.move_inky()
 
 
@@ -643,10 +656,9 @@ class Pinky(Ghost):
             self.x_pos = 464
         elif self.x_pos > 464:
             self.x_pos - 16
-        return self.x_pos, self.y_pos, self.direction
 
     def update(self):
         self.rect = self.image.get_rect(topleft=(self.x_pos,self.y_pos))
         self.animate()
-        self.turns, self.in_box = self.check_collisions()
+        self.check_collisions()
         self.move_pinky()

@@ -9,7 +9,6 @@ class Level:
     def __init__(self):
         # Sprites
         self.tile = None
-        print("test")
         self.wall = pg.sprite.Group()
         self.point = pg.sprite.Group()
         self.stop = pg.sprite.Group()
@@ -48,20 +47,20 @@ class Level:
                         tile = Tile(x, y, tile_type)
                         self.power_up.add(tile)
                         self.tile.append(tile)
-                    elif tile_type == "Yellow":
-                        tile = Inky(x, y, (100, 100), 1, tile_type, 2, False, False, 0, self.stop)
-                        self.ghost.add(tile)
-                        self.tile.append(tile)
-                    elif tile_type == "Pink":
-                        tile = Pinky(x, y, (100, 100), 1, tile_type, 2, False, False, 1, self.stop)
-                        self.ghost.add(tile)
-                        self.tile.append(tile)
-                    elif tile_type == "Blue":
-                        tile = Blinky(x, y, (100, 100), 1, tile_type, 2, False, False, 2, self.stop)
-                        self.ghost.add(tile)
-                        self.tile.append(tile)
+                    # elif tile_type == "Yellow":
+                    #     tile = Clyde(x, y, (100, 100), 1, tile_type, 2, False, False, 0, self.stop)
+                    #     self.ghost.add(tile)
+                    #     self.tile.append(tile)
+                    # elif tile_type == "Pink":
+                    #     tile = Pinky(x, y, (100, 100), 1, tile_type, 2, False, False, 1, self.stop)
+                    #     self.ghost.add(tile)
+                    #     self.tile.append(tile)
+                    # elif tile_type == "Blue":
+                    #     tile = Inky(x, y, (100, 100), 1, tile_type, 2, False, False, 2, self.stop)
+                    #     self.ghost.add(tile)
+                    #     self.tile.append(tile)
                     elif tile_type == "Red":
-                        tile = Pinky(x, y, (100, 100), 1, tile_type, 2, False, False, 3, self.stop)
+                        tile = Blinky(x, y, (100, 100), 1, tile_type, 2, False, False, 3, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
                     elif tile_type == "Stop":
@@ -83,6 +82,4 @@ class Level:
 
         self.ghost.update()
         self.player.update()
-        for s in self.ghost.sprites():
-            if s.id == 3:
-                print(s.x_pos, s.y_pos)
+

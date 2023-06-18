@@ -9,7 +9,6 @@ class BackGround(pg.sprite.Sprite):
         self.frames = import_folder("assets/bg")
         self.image = self.frames[0]
         self.rect = self.image.get_rect(topleft=(0, 48))
-        print("TEST")
 
 
 class Tile(pg.sprite.Sprite):
