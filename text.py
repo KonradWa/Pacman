@@ -6,7 +6,7 @@ class Text:
         self.text_color = text_color
         self.font_family = font_family
         self.font_size = font_size
-        self.font = pg.font.Font("assets/Pixeltype.ttf", self.font_size)
+        self.font = pg.font.Font("assets/PressStart2P-Regular.ttf", self.font_size)
         self.image = self.font.render(self.text, True, self.text_color)
         self.rect = self.image.get_rect()
         self.pc_x = pc_x

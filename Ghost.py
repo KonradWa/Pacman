@@ -16,8 +16,6 @@ class Ghost(pg.sprite.Sprite):
         self.stop = stop
         self.x_pos = x_coord
         self.y_pos = y_coord
-        self.center_x = self.x_pos
-        self.center_y = self.y_pos
         self.target = target
         self.speed = speed
         self.power_up = False
@@ -53,6 +51,7 @@ class Ghost(pg.sprite.Sprite):
                 self.animations[animation] = import_folder(full_path)
 
     def animate(self):
+
         if not self.power_up and not self.dead:
             animation = self.animations[self.direction]
         else:
@@ -64,6 +63,13 @@ class Ghost(pg.sprite.Sprite):
 
         self.image = animation[int(self.frame_index)]
 
+    def set_speed(self):
+        if self.dead:
+            self.speed = 4
+        elif self.power_up:
+            self.speed = 1
+        else:
+            self.speed = 2
     def check_collisions(self):
         # R, L, U, D
         num1 = 16
@@ -135,8 +141,11 @@ class Ghost(pg.sprite.Sprite):
             self.x_pos = 0
         elif self.x_pos < 0:
             self.x_pos = 448
-        if 160 < self.x_pos < 272 and 240 < self.y_pos < 304:
+        if 146 <= self.x_pos <= 288 and 256 <= self.y_pos <= 320:
             self.in_box = True
+            self.dead = False
+            self.import_character_assets()
+            self.speed = 2
         else:
             self.in_box = False
 
@@ -291,6 +300,7 @@ class Clyde(Ghost):
         self.animate()
         self.check_collisions()
         self.move_clyde()
+        self.set_speed()
 
 
 class Blinky(Ghost):
@@ -407,6 +417,8 @@ class Blinky(Ghost):
         self.animate()
         self.check_collisions()
         self.move_blinky()
+        self.set_speed()
+
 
 
 class Inky(Ghost):
@@ -539,6 +551,7 @@ class Inky(Ghost):
         self.animate()
         self.check_collisions()
         self.move_inky()
+        self.set_speed()
 
 
 class Pinky(Ghost):
@@ -674,3 +687,5 @@ class Pinky(Ghost):
         self.animate()
         self.check_collisions()
         self.move_pinky()
+        self.set_speed()
+

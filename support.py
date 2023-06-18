@@ -3,8 +3,9 @@ import pygame as pg
 from csv import reader, writer
 
 screen_width = 28 * 16
-screen_height = 36 * 16
+screen_height = 35 * 16
 tile_size = 16
+pacman_start_pos = (432, 244)
 
 
 def import_folder(path):

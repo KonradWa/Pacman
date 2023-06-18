@@ -12,6 +12,7 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.power_up = False
         self.speed = 2
+        self.life = 3
 
         self.direction = 0
         self.last_direction = 0
