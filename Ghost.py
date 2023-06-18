@@ -9,7 +9,7 @@ for row_index, row in enumerate(level):
 
 
 class Ghost(pg.sprite.Sprite):
-    def __init__(self, x_coord, y_coord, target, speed, img, direct, dead, box, id, stop):
+    def __init__(self, x_coord, y_coord, target, speed, direct, dead, box, id, stop):
         super().__init__()
         self.turns = None
         self.animations = None
@@ -19,11 +19,11 @@ class Ghost(pg.sprite.Sprite):
         self.target = target
         self.speed = speed
         self.power_up = False
-
         self.direction = direct
         self.dead = dead
         self.in_box = box
         self.id = id
+        # Create image
         self.import_character_assets()
         self.frame_index = 0
         self.animations_speed = 0.2
@@ -77,6 +77,7 @@ class Ghost(pg.sprite.Sprite):
         num3 = 16
         self.turns = [False, False, False, False]
         if 0 < self.x_pos // 16 < 27:
+            # wychodzenie z boxa
             if level[(self.y_pos - 16) // num1][self.x_pos // num2] == 9:
                 self.turns[2] = True
             if level[self.y_pos // num1][(self.x_pos - num3) // num2] != 8 \
@@ -95,6 +96,8 @@ class Ghost(pg.sprite.Sprite):
                     or (level[(self.y_pos - num3) // num1][self.x_pos // num2] == 9 and (
                     self.in_box or self.dead)):
                 self.turns[2] = True
+
+            # Kolizja y
             if self.direction == 2 or self.direction == 3:
                 if self.x_pos % num2 == 0:
                     if level[(self.y_pos + num3) // num1][self.x_pos // num2] != 8 \
@@ -115,6 +118,7 @@ class Ghost(pg.sprite.Sprite):
                             self.in_box or self.dead)):
                         self.turns[0] = True
 
+            # Kolizja x
             if self.direction == 0 or self.direction == 1:
                 if self.x_pos % num2 == 0:
                     if level[(self.y_pos + num3) // num1][self.x_pos // num2] != 8 \
@@ -137,10 +141,12 @@ class Ghost(pg.sprite.Sprite):
         else:
             self.turns[0] = True
             self.turns[1] = True
+        # Przechodznie z lewej do prawej i odwrotnie
         if self.x_pos > 448:
             self.x_pos = 0
         elif self.x_pos < 0:
             self.x_pos = 448
+        # Sprawdzanie czy jest w boxie
         if 146 <= self.x_pos <= 288 and 256 <= self.y_pos <= 320:
             self.in_box = True
             self.dead = False
@@ -151,8 +157,8 @@ class Ghost(pg.sprite.Sprite):
 
 
 class Clyde(Ghost):
-    def __init__(self, x_coord, y_coord, target, speed, img, direct, dead, box, id, stop):
-        super().__init__(x_coord, y_coord, target, speed, img, direct, dead, box, id, stop)
+    def __init__(self, x_coord, y_coord, target, speed, direct, dead, box, id, stop):
+        super().__init__(x_coord, y_coord, target, speed, direct, dead, box, id, stop)
 
     def move_clyde(self):
         # r, l, u, d
@@ -304,8 +310,8 @@ class Clyde(Ghost):
 
 
 class Blinky(Ghost):
-    def __init__(self, x_coord, y_coord, target, speed, img, direct, dead, box, id, stop):
-        super().__init__(x_coord, y_coord, target, speed, img, direct, dead, box, id, stop)
+    def __init__(self, x_coord, y_coord, target, speed, direct, dead, box, id, stop):
+        super().__init__(x_coord, y_coord, target, speed, direct, dead, box, id, stop)
 
     def move_blinky(self):
         # r, l, u, d
@@ -422,8 +428,8 @@ class Blinky(Ghost):
 
 
 class Inky(Ghost):
-    def __init__(self, x_coord, y_coord, target, speed, img, direct, dead, box, id, stop):
-        super().__init__(x_coord, y_coord, target, speed, img, direct, dead, box, id, stop)
+    def __init__(self, x_coord, y_coord, target, speed, direct, dead, box, id, stop):
+        super().__init__(x_coord, y_coord, target, speed, direct, dead, box, id, stop)
 
     def move_inky(self):
         # r, l, u, d
@@ -555,8 +561,8 @@ class Inky(Ghost):
 
 
 class Pinky(Ghost):
-    def __init__(self, x_coord, y_coord, target, speed, img, direct, dead, box, id, stop):
-        super().__init__(x_coord, y_coord, target, speed, img, direct, dead, box, id, stop)
+    def __init__(self, x_coord, y_coord, target, speed, direct, dead, box, id, stop):
+        super().__init__(x_coord, y_coord, target, speed, direct, dead, box, id, stop)
 
     def move_pinky(self):
         # r, l, u, d

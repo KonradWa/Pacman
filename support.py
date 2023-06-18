@@ -7,7 +7,7 @@ screen_height = 35 * 16
 tile_size = 16
 pacman_start_pos = (432, 244)
 
-
+# Pobieranie zdjęć
 def import_folder(path):
     surface_list = []
     for _, __, image_files in os.walk(path):
@@ -21,7 +21,7 @@ def import_folder(path):
 
     return surface_list
 
-
+# Pobieranie csv
 def import_csv_save(path):
     terrain_map = []
     with open(path) as maps:
@@ -30,7 +30,7 @@ def import_csv_save(path):
             terrain_map.append(list(row))
         return terrain_map
 
-
+# Rodzaje obiektów
 tile_types = {
     "0": ("Pacman"),
     "1": ("Yellow"),
@@ -44,6 +44,7 @@ tile_types = {
 
 level_1 = import_csv_save("level/map1.csv")
 
+# Odczyt zakrętów
 x = import_csv_save("level/zakret.csv")
 zakrety = []
 for row_index, row in enumerate(x):
