@@ -63,3 +63,7 @@ class Player(pg.sprite.Sprite):
         self.get_input()
         self.animate()
         self.move()
+        if self.rect.centerx > 448:
+            self.rect.centerx = 0
+        elif self.rect.centerx < 0:
+            self.rect.centerx = 448

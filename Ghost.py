@@ -65,7 +65,7 @@ class Ghost(pg.sprite.Sprite):
         num2 = 16
         num3 = 16
         self.turns = [False, False, False, False]
-        if 0 < self.x_pos // 28 < 28:
+        if 0 < self.x_pos // 16 < 27:
             if level[(self.y_pos - 16) // num1][self.x_pos // num2] == 9:
                 self.turns[2] = True
             if level[self.y_pos // num1][(self.x_pos - num3) // num2] != 8 \
@@ -126,6 +126,10 @@ class Ghost(pg.sprite.Sprite):
         else:
             self.turns[0] = True
             self.turns[1] = True
+        if self.x_pos > 448:
+            self.x_pos = 0
+        elif self.x_pos < 0:
+            self.x_pos = 448
         if 160 < self.x_pos < 272 and 240 < self.y_pos < 304:
             self.in_box = True
         else:
