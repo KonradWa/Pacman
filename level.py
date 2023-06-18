@@ -3,6 +3,7 @@ from support import *
 from tile import *
 from Ghost import *
 from pleyer import Player
+from text import Text
 
 
 class Level:
@@ -27,6 +28,13 @@ class Level:
         self.bg.add(tile)
 
         self.points = 0
+        self.points_display = []
+        txt = Text("SCORE:","white",0,0,48)
+        self.points_display.append(txt)
+        txt = Text(f"{self.points}","white",0,32)
+        self.points_display.append(txt)
+
+
 
     def setup_level(self, layout):
         self.tile = []
@@ -93,6 +101,7 @@ class Level:
             if self.player.sprite.rect.collidepoint(p.rect.centerx,p.rect.centery):
                 p.kill()
                 self.points += 10
+
     def run(self):
         player_x = self.player.sprite.rect.centerx
         player_y = self.player.sprite.rect.centery
@@ -111,4 +120,12 @@ class Level:
 
         self.ghost.update()
         self.player.update()
+
+        counter = 0
+        for p in self.points_display:
+            if counter == 1:
+                p.text = f"{self.points}"
+                p.update()
+            p.draw(self.display_surface)
+            counter+=1
 
