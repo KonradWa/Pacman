@@ -26,6 +26,8 @@ class Level:
         tile = BackGround()
         self.bg.add(tile)
 
+        self.points = 0
+
     def setup_level(self, layout):
         self.tile = []
 
@@ -86,6 +88,11 @@ class Level:
                 player.direction = player.last_direction
                 player.rect.centery -= 2
 
+    def eat_points(self):
+        for p in self.point.sprites():
+            if self.player.sprite.rect.collidepoint(p.rect.centerx,p.rect.centery):
+                p.kill()
+                self.points += 10
     def run(self):
         player_x = self.player.sprite.rect.centerx
         player_y = self.player.sprite.rect.centery
@@ -94,6 +101,7 @@ class Level:
             g.target = target[g.id]
 
         self.player_wall_collision()
+        self.eat_points()
 
         self.bg.draw(self.display_surface)
         self.point.draw(self.display_surface)
