@@ -7,6 +7,8 @@ screen_height = 35 * 16
 tile_size = 16
 pacman_start_pos = (432, 244)
 sound_volume = 0.1
+start_target = [(200, 128), (400, 64), (300, 128), (200, 64)]
+
 
 # Pobieranie zdjęć
 def import_folder(path):

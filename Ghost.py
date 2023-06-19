@@ -53,6 +53,7 @@ class Ghost(pg.sprite.Sprite):
 
     # Animacje
     def animate(self):
+        print(f"{self.id} - {self.target}")
         if not self.power_up and not self.dead:
             animation = self.animations[self.direction]
         else:

@@ -85,25 +85,25 @@ class Level:
                         self.power_up.add(tile)
                         self.tile.append(tile)
                     elif tile_type == "Yellow":
-                        tile = Clyde(x, y, (300,64), 2, 2, False, False, 0, self.stop)
+                        tile = Clyde(x, y, start_target[0], 2, 2, False, False, 0, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
                         self.ghost_pos[0] = (x,y)
                     elif tile_type == "Pink":
-                        tile = Pinky(x, y, (300,64), 2, 2, False, False, 1, self.stop)
+                        tile = Pinky(x, y, start_target[1], 2, 2, False, False, 1, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
                         self.ghost_pos[1] = (x,y)
                     elif tile_type == "Blue":
-                        tile = Inky(x, y, (300,64), 2, 2, False, False, 2, self.stop)
+                        tile = Inky(x, y, start_target[2], 2, 2, False, False, 2, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
                         self.ghost_pos[2] = (x,y)
                     elif tile_type == "Red":
-                        tile = Blinky(x, y, (300,64), 2, 2, False, False, 3, self.stop)
+                        tile = Blinky(x, y, start_target[3], 2, 2, False, False, 3, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
-                        self.ghost_pos[3] = (208,272)
+                        self.ghost_pos[3] = (x,y)
                     elif tile_type == "Stop":
                         tile = Tile(x, y, tile_type)
                         self.stop.add(tile)
@@ -171,7 +171,7 @@ class Level:
                     if tmp > 0:
                         player.rect.topleft = self.player_pos
                         for g in self.ghost.sprites():
-                            g.target = (300,64)
+                            g.target = start_target[g.id]
                             self.ghost_timer = 0
                             g.x_pos = self.ghost_pos[g.id][0]
                             g.y_pos = self.ghost_pos[g.id][1]
@@ -219,7 +219,7 @@ class Level:
 
     # Ustawianie calu duchów
     def set_target(self):
-        if self.ghost_timer >40:
+        if self.ghost_timer > 100:
             for g in self.ghost.sprites():
                 if g.dead:
                     g.target = (256, 288)
