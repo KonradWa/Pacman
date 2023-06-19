@@ -3,11 +3,10 @@ from support import *
 
 # Object tła
 class BackGround(pg.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, lvl):
         super().__init__()
         self.properties = None
-        self.frames = import_folder("assets/bg")
-        self.image = self.frames[0]
+        self.image = pg.image.load("assets/bg/bg"+str(lvl)+".png").convert_alpha()
         self.rect = self.image.get_rect(topleft=(0, 48))
 
 # Objeck

@@ -10,6 +10,8 @@ class Level:
     def __init__(self):
         self.player_pos = None
         self.tile = None
+        self.current_level = 1
+
         # Sprites
         self.wall = pg.sprite.Group()
         self.point = pg.sprite.Group()
@@ -24,10 +26,8 @@ class Level:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.display_surface = pg.display.set_mode((self.screen_width, self.screen_height))
-        self.setup_level(level_1)
-        # BG
-        tile = BackGround()
-        self.bg.add(tile)
+        self.setup_level(mapa[self.current_level])
+
         # Game attribute
         self.power_up_active = False
         self.counter = 0
@@ -43,7 +43,7 @@ class Level:
         self.points_display.append(txt)
         txt = Text(f"Level:", "white", 335, 0, 20)
         self.points_display.append(txt)
-        txt = Text(f"001", "white", 390, 26, 20)
+        txt = Text(f"00{self.current_level}", "white", 390, 26, 20)
         self.points_display.append(txt)
         # Sounds
         self.eating_sound = pg.mixer.Sound("sound/eating.wav")
@@ -62,7 +62,6 @@ class Level:
 
     # Generowanie mapy
     def setup_level(self, layout):
-        self.tile = []
         self.ghost_pos = [0,1,2,3]
 
         for row_index, row in enumerate(layout):
@@ -75,39 +74,34 @@ class Level:
                         player_sprite = Player((x, y))
                         self.player_pos = (x,y)
                         self.player.add(player_sprite)
-                        self.tile.append(player_sprite)
                     if tile_type == "Point":
                         tile = Tile(x, y, tile_type)
                         self.point.add(tile)
-                        self.tile.append(tile)
                     elif tile_type == "Power_up":
                         tile = Tile(x, y, tile_type)
                         self.power_up.add(tile)
-                        self.tile.append(tile)
                     elif tile_type == "Yellow":
                         tile = Clyde(x, y, start_target[0], 2, 2, False, False, 0, self.stop)
                         self.ghost.add(tile)
-                        self.tile.append(tile)
                         self.ghost_pos[0] = (x,y)
                     elif tile_type == "Pink":
                         tile = Pinky(x, y, start_target[1], 2, 2, False, False, 1, self.stop)
                         self.ghost.add(tile)
-                        self.tile.append(tile)
                         self.ghost_pos[1] = (x,y)
                     elif tile_type == "Blue":
                         tile = Inky(x, y, start_target[2], 2, 2, False, False, 2, self.stop)
                         self.ghost.add(tile)
-                        self.tile.append(tile)
                         self.ghost_pos[2] = (x,y)
                     elif tile_type == "Red":
                         tile = Blinky(x, y, start_target[3], 2, 2, False, False, 3, self.stop)
                         self.ghost.add(tile)
-                        self.tile.append(tile)
                         self.ghost_pos[3] = (x,y)
                     elif tile_type == "Stop":
                         tile = Tile(x, y, tile_type)
                         self.stop.add(tile)
-                        self.tile.append(tile)
+        # BG
+        tile = BackGround(self.current_level)
+        self.bg.add(tile)
 
     # Kolizje gracza za ścianą
     def player_wall_collision(self):
@@ -123,7 +117,7 @@ class Level:
             elif player.direction == 3 and player.rect.colliderect(s.rect):
                 player.rect.centery -= 2
         # Skręcanie
-        for z in zakrety:
+        for z in zakrety[self.current_level]:
             if player.direction == 0 and player.rect.topleft[0] == z[0]*16 and player.rect.topleft[1] == z[1]*16:
                 player.last_direction = player.direction
                 player.direction = player.next_direction
@@ -242,16 +236,21 @@ class Level:
                 self.game = 1
                 self.game_timer = 5
             elif keys[pg.K_SPACE] and (self.game == 3 or self.game == 4):
+                if self.game == 4:
+                    self.pacman_win_sound.stop()
+                    if self.current_level == 2:
+                        self.current_level -=1
+                    self.current_level += 1
                 self.game = 1
                 self.power_up.empty()
                 self.ghost.empty()
                 self.point.empty()
                 self.player.empty()
+                self.stop.empty()
+                self.bg.empty()
                 self.points = 0
-                self.setup_level(level_1)
+                self.setup_level(mapa[self.current_level])
                 self.game_timer = 5
-                if self.game == 4:
-                    self.pacman_win_sound.stop()
 
         else:
             self.game_timer -=1
@@ -270,7 +269,9 @@ class Level:
             self.game = 4
             self.pacman_win_sound.play(-1)
 
+
     def run(self):
+        print(self.current_level)
         self.check_win()
         self.check_dead()
         self.set_game()
@@ -304,6 +305,10 @@ class Level:
                     p.text = f"{self.points}"
                     p.update()
                 p.draw(self.display_surface)
+                if counter == 3:
+                    p.text = f"00{self.current_level}"
+                    p.update()
+                p.draw(self.display_surface)
                 counter += 1
         else:
             # Rysowanie
@@ -319,6 +324,11 @@ class Level:
             for p in self.points_display:
                 if counter == 1:
                     p.text = f"{self.points}"
+                    p.update()
+                p.draw(self.display_surface)
+                counter += 1
+                if counter == 3:
+                    p.text = f"{self.current_level}"
                     p.update()
                 p.draw(self.display_surface)
                 counter += 1

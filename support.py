@@ -46,13 +46,30 @@ tile_types = {
 }
 
 level_1 = import_csv_save("level/map1.csv")
+level_2 = import_csv_save("level/map2.csv")
 
 # Odczyt zakrętów
-x = import_csv_save("level/zakret.csv")
-zakrety = []
+x = import_csv_save("level/zakret1.csv")
+zakrety1 = []
 for row_index, row in enumerate(x):
     for col_index, col in enumerate(row):
         if col == "1":
-            zakrety.append((col_index,row_index))
+            zakrety1.append((col_index,row_index))
+x = import_csv_save("level/zakret2.csv")
+zakrety2 = []
+for row_index, row in enumerate(x):
+    for col_index, col in enumerate(row):
+        if col == "1":
+            zakrety2.append((col_index,row_index))
+
+zakrety = {
+    1:zakrety1,
+    2:zakrety2
+}
+
+mapa = {
+    1:level_1,
+    2:level_2
+}
 
 
