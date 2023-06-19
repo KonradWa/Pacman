@@ -45,6 +45,20 @@ class Level:
         self.points_display.append(txt)
         txt = Text(f"001", "white", 390, 26, 20)
         self.points_display.append(txt)
+        # Sounds
+        self.eating_sound = pg.mixer.Sound("sound/eating.wav")
+        self.pacman_dead_sound = pg.mixer.Sound("sound/pacman_death.wav")
+        self.pacman_eat_ghost_sound = pg.mixer.Sound("sound/pacman_eatghost.wav")
+        self.pacman_win_sound = pg.mixer.Sound("sound/pacman_win.wav")
+        self.start_sound = pg.mixer.Sound("sound/start.wav")
+        self.start_sound.play(loops=-1)
+        # Sound volume
+        self.eating_sound.set_volume(sound_volume)
+        self.pacman_dead_sound.set_volume(sound_volume)
+        self.pacman_eat_ghost_sound.set_volume(sound_volume)
+        self.pacman_win_sound.set_volume(sound_volume)
+        self.start_sound.set_volume(sound_volume)
+        self.start_sound.set_volume(sound_volume)
 
     # Generowanie mapy
     def setup_level(self, layout):
@@ -138,17 +152,20 @@ class Level:
         # Zjadanie duchów
         if self.power_up_active:
             for g in self.ghost.sprites():
-                if player.rect.colliderect(g.rect):
-                    self.points += 200
-                    g.dead = True
-                    g.import_character_assets()
-                    g.target = (224, 288)
+                if not g.dead:
+                    if player.rect.colliderect(g.rect):
+                        self.pacman_eat_ghost_sound.play()
+                        self.points += 200
+                        g.dead = True
+                        g.import_character_assets()
+                        g.target = (224, 288)
         # Bicie gracza
         else:
             for g in self.ghost.sprites():
                 if not g.dead:
                     tmp = 0
                     if player.rect.colliderect(g.rect):
+                        self.pacman_dead_sound.play()
                         player.life -= 1
                         tmp += 1
                     if tmp > 0:
@@ -159,6 +176,7 @@ class Level:
                             g.x_pos = self.ghost_pos[g.id][0]
                             g.y_pos = self.ghost_pos[g.id][1]
                             g.direction = 2
+                            self.game = 2
 
     # Zbieranie punktów
     def eat_points(self):
@@ -166,6 +184,8 @@ class Level:
             if self.player.sprite.rect.collidepoint(p.rect.centerx, p.rect.centery):
                 p.kill()
                 self.points += 10
+            if not pg.mixer.get_busy():
+                self.eating_sound.play()
 
     # Zbieranie power up'ów
     def eat_power_up(self):
@@ -212,6 +232,7 @@ class Level:
         keys = pg.key.get_pressed()
         if self.game_timer <= 0:
             if keys[pg.K_SPACE] and self.game == 0:
+                self.start_sound.stop()
                 self.game = 1
                 self.game_timer = 5
             elif keys[pg.K_SPACE] and self.game == 1:
@@ -229,6 +250,8 @@ class Level:
                 self.points = 0
                 self.setup_level(level_1)
                 self.game_timer = 5
+                if self.game == 4:
+                    self.pacman_win_sound.stop()
 
         else:
             self.game_timer -=1
@@ -245,6 +268,7 @@ class Level:
             counter += 1
         if counter == 0:
             self.game = 4
+            self.pacman_win_sound.play(-1)
 
     def run(self):
         self.check_win()

@@ -6,6 +6,7 @@ screen_width = 28 * 16
 screen_height = 35 * 16
 tile_size = 16
 pacman_start_pos = (432, 244)
+sound_volume = 0.1
 
 # Pobieranie zdjęć
 def import_folder(path):
@@ -51,5 +52,5 @@ for row_index, row in enumerate(x):
     for col_index, col in enumerate(row):
         if col == "1":
             zakrety.append((col_index,row_index))
-print(zakrety)
+
 
