@@ -10,7 +10,7 @@ class Level:
     def __init__(self):
         self.player_pos = None
         self.tile = None
-        self.current_level = 1
+        self.current_level = current_level
 
         # Sprites
         self.wall = pg.sprite.Group()
@@ -80,22 +80,22 @@ class Level:
                     elif tile_type == "Power_up":
                         tile = Tile(x, y, tile_type)
                         self.power_up.add(tile)
-                    elif tile_type == "Yellow":
-                        tile = Clyde(x, y, start_target[0], 2, 2, False, False, 0, self.stop)
-                        self.ghost.add(tile)
-                        self.ghost_pos[0] = (x,y)
-                    elif tile_type == "Pink":
-                        tile = Pinky(x, y, start_target[1], 2, 2, False, False, 1, self.stop)
-                        self.ghost.add(tile)
-                        self.ghost_pos[1] = (x,y)
-                    elif tile_type == "Blue":
-                        tile = Inky(x, y, start_target[2], 2, 2, False, False, 2, self.stop)
-                        self.ghost.add(tile)
-                        self.ghost_pos[2] = (x,y)
-                    elif tile_type == "Red":
-                        tile = Blinky(x, y, start_target[3], 2, 2, False, False, 3, self.stop)
-                        self.ghost.add(tile)
-                        self.ghost_pos[3] = (x,y)
+                    # elif tile_type == "Yellow":
+                    #     tile = Clyde(x, y, start_target[0], 2, 2, False, False, 0, self.stop)
+                    #     self.ghost.add(tile)
+                    #     self.ghost_pos[0] = (x,y)
+                    # elif tile_type == "Pink":
+                    #     tile = Pinky(x, y, start_target[1], 2, 2, False, False, 1, self.stop)
+                    #     self.ghost.add(tile)
+                    #     self.ghost_pos[1] = (x,y)
+                    # elif tile_type == "Blue":
+                    #     tile = Inky(x, y, start_target[2], 2, 2, False, False, 2, self.stop)
+                    #     self.ghost.add(tile)
+                    #     self.ghost_pos[2] = (x,y)
+                    # elif tile_type == "Red":
+                    #     tile = Blinky(x, y, start_target[3], 2, 2, False, False, 3, self.stop)
+                    #     self.ghost.add(tile)
+                    #     self.ghost_pos[3] = (x,y)
                     elif tile_type == "Stop":
                         tile = Tile(x, y, tile_type)
                         self.stop.add(tile)
@@ -240,7 +240,9 @@ class Level:
                     self.pacman_win_sound.stop()
                     if self.current_level == 2:
                         self.current_level -=1
+                        current_level = self.current_level
                     self.current_level += 1
+                    current_level = self.current_level
                 self.game = 1
                 self.power_up.empty()
                 self.ghost.empty()

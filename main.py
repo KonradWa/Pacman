@@ -18,4 +18,4 @@ while True:
     level.run()
 
     pg.display.update()
-    clock.tick(30)
+    clock.tick(150)

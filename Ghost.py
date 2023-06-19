@@ -2,7 +2,8 @@ import pygame as pg
 from support import *
 from random import randint
 
-level = import_csv_save("level/map1.csv")
+
+level = import_csv_save(f"level/map{current_level}.csv")
 for row_index, row in enumerate(level):
     for col_index, col in enumerate(row):
         level[row_index][col_index] = int(level[row_index][col_index])
