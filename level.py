@@ -89,7 +89,7 @@ class Level:
                         tile = Blinky(x, y, (300,64), 2, 2, False, False, 3, self.stop)
                         self.ghost.add(tile)
                         self.tile.append(tile)
-                        self.ghost_pos[3] = (256,288)
+                        self.ghost_pos[3] = (208,272)
                     elif tile_type == "Stop":
                         tile = Tile(x, y, tile_type)
                         self.stop.add(tile)

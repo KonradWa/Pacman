@@ -30,6 +30,7 @@ class Ghost(pg.sprite.Sprite):
         self.image = self.animations[direct][self.frame_index]
         self.rect = self.image.get_rect(topleft=(x_coord, y_coord))
 
+    # Pobieranie assetów
     def import_character_assets(self):
         if not self.power_up and not self.dead:
             self.animations = {0: [], 1: [], 2: [], 3: []}
@@ -50,8 +51,8 @@ class Ghost(pg.sprite.Sprite):
                 full_path = character_path
                 self.animations[animation] = import_folder(full_path)
 
+    # Animacje
     def animate(self):
-        print(self.target)
         if not self.power_up and not self.dead:
             animation = self.animations[self.direction]
         else:
@@ -63,6 +64,7 @@ class Ghost(pg.sprite.Sprite):
 
         self.image = animation[int(self.frame_index)]
 
+    # Ustawianie prędkości
     def set_speed(self):
         if self.dead:
             self.speed = 4
@@ -70,6 +72,7 @@ class Ghost(pg.sprite.Sprite):
             self.speed = 1
         else:
             self.speed = 2
+
     def check_collisions(self):
         # R, L, U, D
         num1 = 16
@@ -121,11 +124,11 @@ class Ghost(pg.sprite.Sprite):
             # Kolizja x
             if self.direction == 0 or self.direction == 1:
                 if self.x_pos % num2 == 0:
-                    if level[(self.y_pos + num3) // num1][self.x_pos // num2] != 8 \
+                    if level[((self.y_pos ) // num1) -1][self.x_pos // num2] != 8 \
                             or (level[(self.y_pos + num3) // num1][self.x_pos // num2] == 9 and (
                             self.in_box or self.dead)):
                         self.turns[3] = True
-                    if level[(self.y_pos - num3) // num1][self.x_pos // num2] != 8 \
+                    if level[((self.y_pos ) // num1) -1][self.x_pos // num2] != 8 \
                             or (level[(self.y_pos - num3) // num1][self.x_pos // num2] == 9 and (
                             self.in_box or self.dead)):
                         self.turns[2] = True
@@ -302,11 +305,11 @@ class Clyde(Ghost):
             self.x_pos - 30
 
     def update(self):
-        self.rect = self.image.get_rect(topleft=(self.x_pos, self.y_pos))
+        self.set_speed()
         self.animate()
         self.check_collisions()
         self.move_clyde()
-        self.set_speed()
+        self.rect = self.image.get_rect(topleft=(self.x_pos, self.y_pos))
 
 
 class Blinky(Ghost):
@@ -419,11 +422,11 @@ class Blinky(Ghost):
             self.x_pos - 30
 
     def update(self):
-        self.rect = self.image.get_rect(topleft=(self.x_pos, self.y_pos))
+        self.set_speed()
         self.animate()
         self.check_collisions()
         self.move_blinky()
-        self.set_speed()
+        self.rect = self.image.get_rect(topleft=(self.x_pos, self.y_pos))
 
 
 
@@ -553,11 +556,11 @@ class Inky(Ghost):
             self.x_pos - 30
 
     def update(self):
-        self.rect = self.image.get_rect(topleft=(self.x_pos, self.y_pos))
+        self.set_speed()
         self.animate()
         self.check_collisions()
         self.move_inky()
-        self.set_speed()
+        self.rect = self.image.get_rect(topleft=(self.x_pos, self.y_pos))
 
 
 class Pinky(Ghost):
@@ -689,9 +692,9 @@ class Pinky(Ghost):
             self.x_pos - 16
 
     def update(self):
-        self.rect = self.image.get_rect(topleft=(self.x_pos, self.y_pos))
+        self.set_speed()
         self.animate()
         self.check_collisions()
         self.move_pinky()
-        self.set_speed()
+        self.rect = self.image.get_rect(topleft=(self.x_pos, self.y_pos))
 
